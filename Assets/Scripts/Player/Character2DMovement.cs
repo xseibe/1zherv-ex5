@@ -187,7 +187,7 @@ public class Character2DMovement : MonoBehaviour
     /// </summary>
     void AnimateCharacter()
     {
-	    /*
+		/*
 	     * Task #1a: Orienting the character
 	     *
 	     * Let us start by at least orienting the character, making him face the
@@ -212,8 +212,19 @@ public class Character2DMovement : MonoBehaviour
 	     *   * Persistent heading flag: *mHeadingRight*
 	     *   * Rotating a local rotation by an axis: localRotation *= Quaternion.Euler(...)
 	     */
-	    
-	    var animator = mSelector.charAnimator;
+
+		if (mHeadingRight && mInput.move.x == -1)
+		{
+			mHeadingRight = false;
+			transform.localRotation *= Quaternion.Euler(0f, 180f, 0f);
+		}
+		else if (!mHeadingRight && mInput.move.x == 1)
+		{
+			transform.localRotation *= Quaternion.Euler(0f, 180f, 0f);
+			mHeadingRight = true;
+		}
+
+		var animator = mSelector.charAnimator;
 	    if (animator != null)
 	    {
 			var currentVerticalSpeed = mController.velocity.y;
@@ -227,7 +238,14 @@ public class Character2DMovement : MonoBehaviour
 			var jump = mInput.jump;
 			var falling = !mController.isGrounded && mFallTimeoutDelta <= 0.0f;
 
-			/*
+			animator.SetFloat("Speed", speed);
+            animator.SetFloat("MoveSpeed", moveSpeed);
+			animator.SetBool("Jump", jump);
+            animator.SetBool("Grounded", grounded);
+            animator.SetBool("Fall", falling);
+			animator.SetBool("Crouch", crouch);
+
+            /*
 			 * Task #1a: Passing properties to the Animator
 			 * 
 			 * After rotating the character, he should now be able to look in the
@@ -265,6 +283,6 @@ public class Character2DMovement : MonoBehaviour
 			 *   * Current Animator instance: *animator*
 			 *   * Animator methods: *SetFloat* and *SetBool*
 			 */
-	    }
+        }
     }
 }
